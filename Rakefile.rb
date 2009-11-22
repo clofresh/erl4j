@@ -34,9 +34,9 @@ end
 
 CLEAN.include FileList['**/*.class']
 CLEAN.include "erl4j.jar"
-SRC = FileList['**/*.java']
+SRC = FileList['src/**/*.java']
 OBJ = SRC.pathmap("%X.class")
-ENV['CLASSPATH'] = find_jars
+ENV['CLASSPATH'] = find_jars + ":src"
 DAEMON_CLASS = 'com.syntacticbayleaves.erl4j.Erl4j'
 PID_FILE = 'tmp/jsvc.pid'
 LOG_FILE = 'tmp/erl4j.log'
@@ -49,7 +49,7 @@ directory "tmp"
 task :compile => [OBJ]
 task :default => [:compile]
 
-file "erl4j.jar" => [:compile] do |t|
+file "erl4j.jar" do |t|
   cd "src" do |path|
     sh "jar -cf #{t.name} #{OBJ.pathmap('%{src/,}p')}"
   end
