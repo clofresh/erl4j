@@ -1,3 +1,16 @@
+#
+# The following executables must be in your PATH:
+#  * find
+#  * paste
+#  * javac
+#  * jar
+#  * jsvc 1.0.1 (http://commons.apache.org/daemon/jsvc.html)
+#
+# Note that if you're running Snow Leopard, you must build jsvc 
+# with this patch:  http://issues.apache.org/jira/browse/DAEMON-129
+#
+
+
 require 'rake/clean'
 
 def find_jars
@@ -13,6 +26,10 @@ def options_str(options)
       result + "-#{key} "
     end
   end.strip
+end
+
+def jsvc (options)
+  sh "jsvc #{options_str(options)} #{DAEMON_CLASS}"
 end
 
 CLEAN.include FileList['**/*.class']
@@ -33,7 +50,9 @@ task :compile => [OBJ]
 task :default => [:compile]
 
 file "erl4j.jar" => [:compile] do |t|
-  sh "jar -cf #{t.name} #{OBJ}"
+  cd "src" do |path|
+    sh "jar -cf #{t.name} #{OBJ.pathmap('%{src/,}p')}"
+  end
 end
 
 task :start => ["tmp", "erl4j.jar"] do |t|
@@ -45,7 +64,7 @@ task :start => ["tmp", "erl4j.jar"] do |t|
     :debug   => nil
   }
   
-  sh "jsvc #{options_str(options)} #{DAEMON_CLASS}"
+  jsvc options
 end
 
 task :run => ["tmp", "erl4j.jar"] do |t|
@@ -56,7 +75,7 @@ task :run => ["tmp", "erl4j.jar"] do |t|
     :nodetach => nil
   }
 
-  sh "jsvc #{options_str(options)} #{DAEMON_CLASS}"
+  jsvc options
 end
 
 task :stop do |t|
@@ -66,6 +85,6 @@ task :stop do |t|
     :stop    => nil
   }
 
-  sh "jsvc #{options_str(options)} #{DAEMON_CLASS}"
+  jsvc options
 end
 
