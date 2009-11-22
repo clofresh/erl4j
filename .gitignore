@@ -1,0 +1,4 @@
+*.class
+*.log
+*.pid
+src/java/erl4j.jar
