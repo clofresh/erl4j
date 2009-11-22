@@ -1,0 +1,2 @@
+OtpErlang.jar:		1.5.1
+commons-daemon.jar:	1.0.1
