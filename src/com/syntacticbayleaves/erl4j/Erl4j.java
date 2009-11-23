@@ -32,19 +32,21 @@ public class Erl4j implements Daemon {
     public Erl4j() {}
     
     public void init(DaemonContext context) {
-        this.timeout = 2000;
+        String[] args = context.getArguments();
+
+        this.timeout = Integer.parseInt(args[2]);
         this.runnables = new ArrayList();
         this.threads = new ArrayList();
 
         try {
             ClassLoader loader = Erl4j.class.getClassLoader();
-            this.dispatcherClass = loader.loadClass("com.syntacticbayleaves.erl4j.Erl4jDumbDispatcher");
+            this.dispatcherClass = loader.loadClass(args[1]);
         } catch (java.lang.ClassNotFoundException e) {
             
         }
         
         try {
-            this.me = new OtpSelf("jruby_node@ccabanilla-mac");
+            this.me = new OtpSelf(args[0]);
             this.me.publishPort();
         } catch (java.io.IOException e) {
             // log me

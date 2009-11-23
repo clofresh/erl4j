@@ -29,7 +29,7 @@ def options_str(options)
 end
 
 def jsvc (options)
-  sh "jsvc #{options_str(options)} #{DAEMON_CLASS}"
+  sh "jsvc #{options_str(options)} #{DAEMON_CLASS} #{NODE_NAME} #{DISPATCHER_CLASS} #{TIMEOUT}"
 end
 
 CLEAN.include FileList['**/*.class']
@@ -46,6 +46,10 @@ ENV['CLASSPATH'] = find_jars + ":src:sample"
 DAEMON_CLASS = 'com.syntacticbayleaves.erl4j.Erl4j'
 PID_FILE = 'tmp/jsvc.pid'
 LOG_FILE = 'tmp/erl4j.log'
+
+NODE_NAME = 'erl4j@' + `hostname`.strip
+DISPATCHER_CLASS = 'com.syntacticbayleaves.erl4j.Erl4jDumbDispatcher'
+TIMEOUT = 2000
 
 directory "tmp"
 
