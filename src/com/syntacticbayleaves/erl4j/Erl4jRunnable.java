@@ -1,7 +1,5 @@
 package com.syntacticbayleaves.erl4j;
 
-import java.lang.Runnable;
-
 // Erlang's jinterface
 import com.ericsson.otp.erlang.OtpConnection;
 import com.ericsson.otp.erlang.OtpErlangTuple;
@@ -10,9 +8,6 @@ import com.ericsson.otp.erlang.OtpErlangLong;
 
 import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpAuthException;
-
-import com.syntacticbayleaves.erl4j.Erl4jRequest;
-import com.syntacticbayleaves.erl4j.Erl4jHandler;
 
 public class Erl4jRunnable implements Runnable {
     private OtpConnection connection;

@@ -19,9 +19,6 @@ import java.io.IOException;
 import com.ericsson.otp.erlang.OtpAuthException;
 import com.ericsson.otp.erlang.OtpErlangExit;
 
-import com.syntacticbayleaves.erl4j.Erl4jHandler;
-import com.syntacticbayleaves.erl4j.Erl4jRunnable;
-
 public class Erl4j implements Daemon {
     private Class dispatcherClass;
     private ArrayList runnables, threads;
