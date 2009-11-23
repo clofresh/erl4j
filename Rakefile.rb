@@ -33,7 +33,7 @@ def jsvc (options)
 end
 
 CLEAN.include FileList['**/*.class']
-CLEAN.include "erl4j.jar"
+CLEAN.include "src/erl4j.jar"
 SRC = FileList['src/**/*.java']
 OBJ = SRC.pathmap("%X.class")
 ENV['CLASSPATH'] = find_jars + ":src"
@@ -41,15 +41,17 @@ DAEMON_CLASS = 'com.syntacticbayleaves.erl4j.SampleErl4j'
 PID_FILE = 'tmp/jsvc.pid'
 LOG_FILE = 'tmp/erl4j.log'
 
+directory "tmp"
+
+task :default => [:compile]
+
 rule ".class" => [".java"] do |t|
   sh "javac #{t.source}"
 end
 
-directory "tmp"
-task :compile => [OBJ]
-task :default => [:compile]
+task :compile => OBJ
 
-file "erl4j.jar" do |t|
+file "erl4j.jar" => [:compile] do |t|
   cd "src" do |path|
     sh "jar -cf #{t.name} #{OBJ.pathmap('%{src/,}p')}"
   end
