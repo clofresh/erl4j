@@ -37,15 +37,15 @@ public class Erl4jRunnable implements Runnable {
 
                     this.connection.send(request.getPid(), response);
                 } catch (OtpAuthException e) {
-                    // log me
+                    // Bad cookie
                 } catch (java.lang.InterruptedException e) {
-                    // log me
+                    // Timeout
                 }
             }
         } catch (java.io.IOException e) {
-            // log me
+            // Something went wrong with the connection
         } catch (OtpErlangExit e) {
-            // log me
+            // Received an exit signal
         }
     }
 
