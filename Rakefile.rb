@@ -43,7 +43,7 @@ SAMPLE_SRC = FileList['sample/**/*.java']
 SAMPLE_OBJ = SAMPLE_SRC.pathmap("%X.class")
 
 ENV['CLASSPATH'] = find_jars + ":src:sample"
-DAEMON_CLASS = 'com.syntacticbayleaves.erl4j.SampleErl4j'
+DAEMON_CLASS = 'com.syntacticbayleaves.erl4j.Erl4j'
 PID_FILE = 'tmp/jsvc.pid'
 LOG_FILE = 'tmp/erl4j.log'
 
