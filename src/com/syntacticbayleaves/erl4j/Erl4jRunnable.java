@@ -12,14 +12,14 @@ import com.ericsson.otp.erlang.OtpErlangExit;
 import com.ericsson.otp.erlang.OtpAuthException;
 
 import com.syntacticbayleaves.erl4j.Erl4jRequest;
-import com.syntacticbayleaves.erl4j.Erl4jDispatcher;
+import com.syntacticbayleaves.erl4j.Erl4jHandler;
 
 public class Erl4jRunnable implements Runnable {
     private OtpConnection connection;
-    private Erl4jDispatcher dispatcher;
+    private Erl4jHandler dispatcher;
     private int timeout;
     
-    public Erl4jRunnable(OtpConnection connection, Erl4jDispatcher dispatcher, int timeout) {
+    public Erl4jRunnable(OtpConnection connection, Erl4jHandler dispatcher, int timeout) {
         this.connection = connection;
         this.timeout = timeout;
         this.dispatcher = dispatcher;

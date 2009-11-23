@@ -19,7 +19,7 @@ import java.io.IOException;
 import com.ericsson.otp.erlang.OtpAuthException;
 import com.ericsson.otp.erlang.OtpErlangExit;
 
-import com.syntacticbayleaves.erl4j.Erl4jDispatcher;
+import com.syntacticbayleaves.erl4j.Erl4jHandler;
 import com.syntacticbayleaves.erl4j.Erl4jRunnable;
 
 public class Erl4j implements Daemon {
@@ -48,12 +48,12 @@ public class Erl4j implements Daemon {
         OtpConnection connection;
         Erl4jRunnable runnable;
         Thread thread;
-        Erl4jDispatcher dispatcher;
+        Erl4jHandler dispatcher;
         
         try {
             while(this.me != null) {
                 try {
-                    dispatcher = (Erl4jDispatcher) this.dispatcherClass.newInstance();
+                    dispatcher = (Erl4jHandler) this.dispatcherClass.newInstance();
                     connection = this.me.accept();
                     runnable = new Erl4jRunnable(connection, dispatcher, this.timeout);
                     thread = new Thread(runnable);
