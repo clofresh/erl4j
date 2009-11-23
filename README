@@ -1,4 +1,4 @@
-Erl4j provides a framework for creating Java servers that can respond to Erlang RPC messages. 
+Erl4j provides a framework for creating Java daemons that can respond to Erlang RPC messages. 
 
 Dependencies:
  * jsvc 1.0.1 (http://commons.apache.org/daemon/jsvc.html)
@@ -7,5 +7,11 @@ Dependencies:
  
 Erl4j may work with other versions of those dependencies, but those are just the ones I've tested it in.
 
-To use Erl4j, you just have to implement the Erl4j abstract class, specifically the respond method. See sample/com/syntacticbayleaves/erl4j/SampleErl4j.java
+To use Erl4j, you just have to implement the Erl4jHandler interface and update bin/erl4jctl.conf to use your Erl4jHandler implementation class. 
+
+See erl4j-sample/com/syntacticbayleaves/erl4j/SampleErl4jDispatcher.java and erl4j-sample/com/syntacticbayleaves/erl4j/SampleErl4jHandler.java for examples.
+
+To start a server with the samples, run:
+  rake run
+
 
