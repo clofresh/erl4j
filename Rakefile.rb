@@ -18,49 +18,69 @@ def find_jars
 end
 
 CLEAN.include FileList['**/*.class']
-CLEAN.include "src/erl4j.jar"
-CLEAN.include "sample/erl4j-sample.jar"
+CLEAN.include "build"
 
-LIB_SRC = FileList['src/**/*.java']
-LIB_OBJ = LIB_SRC.pathmap("%X.class")
+JARS = ['erl4j', 'erl4j-sample']
 
-SAMPLE_SRC = FileList['sample/**/*.java']
-SAMPLE_OBJ = SAMPLE_SRC.pathmap("%X.class")
+SRC = JARS.inject({}) do |result, element|
+  result[element] = FileList[element + '/**/*.java']
+  result
+end
 
-ENV['CLASSPATH'] = find_jars + ":src:sample"
+OBJ = JARS.inject({}) do |result, element|
+  result[element] = SRC[element].pathmap("build/%X.class")
+  result
+end
+
+ENV['CLASSPATH'] = find_jars + ":" + JARS.join(":")
 
 directory "tmp"
 
-task :default => [:compile_lib]
-
-rule ".class" => [".java"] do |t|
-  sh "javac #{t.source}"
+JARS.each do |jar_name|
+  directory "build/#{jar_name}"
 end
 
-task :compile_lib => LIB_OBJ
-task :compile_sample => LIB_OBJ + SAMPLE_OBJ
+task :default => [:compile, :jar]
 
-file "erl4j.jar" => [:compile_lib] do |t|
-  cd "src" do |path|
-    sh "jar -cf #{t.name} #{LIB_OBJ.pathmap('%{src/,}p')}"
-  end
-end
+desc "Compiles all source files"
+task :compile => [:compile_lib, :compile_sample]
 
-file "erl4j-sample.jar" => [:compile_sample] do |t|
-  cd "sample" do |path|
-    sh "jar -cf #{t.name} #{SAMPLE_OBJ.pathmap('%{sample/,}p')}"
-  end
-end
+desc "Compiles erl4j source files"
+task :compile_lib => 
+  ["build/erl4j"] + OBJ["erl4j"]
 
-task :start => ["tmp", "erl4j.jar"] do |t|
+desc "Compiles erl4j-sample source files"
+task :compile_sample => 
+  [:compile_lib, "build/erl4j-sample"] + OBJ["erl4j-sample"]
+
+desc "Creates erl4j.jar and erl4j-sample.jar"
+task :jar => JARS.map {|jar_name| "build/#{jar_name}.jar"}
+
+
+desc "Start the erl4j as a daemon"
+task :start => [:compile, :jar] do |t|
   sh "bin/erl4jctl start"
 end
 
-task :run => ["tmp", "erl4j.jar", "erl4j-sample.jar"] do |t|
+desc "Run the erl4j in debug mode"
+task :run => [:compile, :jar] do |t|
   sh "bin/erl4jctl run"
 end
 
+desc "Stop the erl4j daemon"
 task :stop do |t|
   sh "bin/erl4jctl stop"
 end
+
+rule ".class" => 
+  [proc { |task_name| "#{task_name.pathmap('%{build/,}X.java')}" }] do |t|
+    sh "javac -d #{t.name.split('/')[0..1].join('/')} #{t.source}"
+end
+
+rule ".jar" => 
+  [proc {|task_name| "#{task_name.pathmap('%X')}"}] do |t|
+    puts t.name
+    sh "jar -cf #{t.name} -C #{t.name.pathmap('%X')} ."
+end
+
 
