@@ -48,7 +48,7 @@ PID_FILE = 'tmp/jsvc.pid'
 LOG_FILE = 'tmp/erl4j.log'
 
 NODE_NAME = 'erl4j@' + `hostname`.strip
-DISPATCHER_CLASS = 'com.syntacticbayleaves.erl4j.SampleErl4jDispatcher'
+DISPATCHER_CLASS = 'com.syntacticbayleaves.erl4j.sample.SampleErl4jDispatcher'
 TIMEOUT = 2000
 
 directory "tmp"
