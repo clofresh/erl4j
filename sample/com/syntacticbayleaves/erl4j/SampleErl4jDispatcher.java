@@ -5,7 +5,7 @@ import com.ericsson.otp.erlang.OtpErlangObject;
 import com.syntacticbayleaves.erl4j.Erl4jHandler;
 import com.syntacticbayleaves.erl4j.Erl4jRequest;
 
-public class Erl4jDumbDispatcher implements Erl4jDispatcher {
+public class SampleErl4jDispatcher implements Erl4jDispatcher {
     public OtpErlangObject respond(Erl4jRequest request) {
         return this.getHandler(request).respond(request);
     }

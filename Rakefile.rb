@@ -48,7 +48,7 @@ PID_FILE = 'tmp/jsvc.pid'
 LOG_FILE = 'tmp/erl4j.log'
 
 NODE_NAME = 'erl4j@' + `hostname`.strip
-DISPATCHER_CLASS = 'com.syntacticbayleaves.erl4j.Erl4jDumbDispatcher'
+DISPATCHER_CLASS = 'com.syntacticbayleaves.erl4j.SampleErl4jDispatcher'
 TIMEOUT = 2000
 
 directory "tmp"
@@ -86,7 +86,7 @@ task :start => ["tmp", "erl4j.jar"] do |t|
   jsvc options
 end
 
-task :run => ["tmp", "erl4j.jar"] do |t|
+task :run => ["tmp", "erl4j.jar", "erl4j-sample.jar"] do |t|
   options = {
     :pidfile  => PID_FILE,
     :cp       => find_jars,
