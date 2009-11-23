@@ -1,0 +1,35 @@
+#!/bin/bash
+
+source $(dirname $0)/erl4jctl.conf
+
+function call_jsvc() {
+    jsvc  $1                     \
+         -cp      "${CLASSPATH}" \
+         -pidfile "${PIDFILE}"   \
+         "${DAEMON_CLASS}"  \
+         "${NODE_NAME}"     \
+         "${HANDLER_CLASS}" \
+         "${TIMEOUT}"
+}
+
+function run() {
+    call_jsvc "-nodetach -debug"
+}
+
+function start() {
+    echo "Starting ${NODE_NAME} erl4j node"
+    call_jsvc "-outfile ${OUTFILE} -errfile ${ERRFILE}"
+}
+
+function stop() {
+    echo "Stopping ${NODE_NAME} erl4j node"
+    call_jsvc "-stop -outfile ${OUTFILE} -errfile ${ERRFILE}"
+}
+
+function restart() {
+    stop
+    start
+}
+
+$1
+

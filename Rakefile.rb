@@ -17,21 +17,6 @@ def find_jars
   `find . -name "*.jar" | paste -s -d':' -`.strip
 end
 
-def options_str(options)
-  options.inject("") do |result, keyval|
-    key, val = keyval
-    if val 
-      result + "-#{key} '#{val}' "
-    else 
-      result + "-#{key} "
-    end
-  end.strip
-end
-
-def jsvc (options)
-  sh "jsvc #{options_str(options)} #{DAEMON_CLASS} #{NODE_NAME} #{DISPATCHER_CLASS} #{TIMEOUT}"
-end
-
 CLEAN.include FileList['**/*.class']
 CLEAN.include "src/erl4j.jar"
 CLEAN.include "sample/erl4j-sample.jar"
@@ -43,13 +28,6 @@ SAMPLE_SRC = FileList['sample/**/*.java']
 SAMPLE_OBJ = SAMPLE_SRC.pathmap("%X.class")
 
 ENV['CLASSPATH'] = find_jars + ":src:sample"
-DAEMON_CLASS = 'com.syntacticbayleaves.erl4j.Erl4j'
-PID_FILE = 'tmp/jsvc.pid'
-LOG_FILE = 'tmp/erl4j.log'
-
-NODE_NAME = 'erl4j@' + `hostname`.strip
-DISPATCHER_CLASS = 'com.syntacticbayleaves.erl4j.sample.SampleErl4jDispatcher'
-TIMEOUT = 2000
 
 directory "tmp"
 
@@ -75,35 +53,14 @@ file "erl4j-sample.jar" => [:compile_sample] do |t|
 end
 
 task :start => ["tmp", "erl4j.jar"] do |t|
-  options = {
-    :outfile => LOG_FILE,
-    :errfile => '&1',
-    :pidfile => PID_FILE,
-    :cp      => find_jars,
-    :debug   => nil
-  }
-  
-  jsvc options
+  sh "bin/erl4jctl start"
 end
 
 task :run => ["tmp", "erl4j.jar", "erl4j-sample.jar"] do |t|
-  options = {
-    :pidfile  => PID_FILE,
-    :cp       => find_jars,
-    :debug    => nil,
-    :nodetach => nil
-  }
-
-  jsvc options
+  sh "bin/erl4jctl run"
 end
 
 task :stop do |t|
-  options = {
-    :pidfile => PID_FILE,
-    :cp      => find_jars,
-    :stop    => nil
-  }
-
-  jsvc options
+  sh "bin/erl4jctl stop"
 end
 
