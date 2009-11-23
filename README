@@ -7,11 +7,24 @@ Dependencies:
  
 Erl4j may work with other versions of those dependencies, but those are just the ones I've tested it in.
 
-To use Erl4j, you just have to implement the Erl4jHandler interface and update bin/erl4jctl.conf to use your Erl4jHandler implementation class. 
-
-See erl4j-sample/com/syntacticbayleaves/erl4j/SampleErl4jDispatcher.java and erl4j-sample/com/syntacticbayleaves/erl4j/SampleErl4jHandler.java for examples.
-
+Before running Erl4j, make sure that epmd is running, otherwise it won't be able to publish its port to other Erlang nodes. To start epmd:
+  /usr/local/lib/erlang/erts-$SOME_VERSION/bin/epmd -daemon
+  
 To start a server with the samples, run:
   rake run
 
+To test it our, start an Erlang process with:
+  erl -sname my_node
+
+For some reason, it won't work without the sname param.
+
+Then from the interpreter you can run:
+  rpc:call('erl4j@my_host', my_method, my_param, []).
+
+And it should echo the call back to you:
+  {call,my_method,my_param,[],<0.31.0>}
+
+To create your own Erl4j server, you just have to implement the Erl4jHandler interface and update bin/erl4jctl.conf to use your Erl4jHandler implementation class. 
+
+See erl4j-sample/com/syntacticbayleaves/erl4j/SampleErl4jDispatcher.java and erl4j-sample/com/syntacticbayleaves/erl4j/SampleErl4jHandler.java for examples.
 
