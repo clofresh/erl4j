@@ -37,7 +37,7 @@ CLEAN.include "erl4j.jar"
 SRC = FileList['src/**/*.java']
 OBJ = SRC.pathmap("%X.class")
 ENV['CLASSPATH'] = find_jars + ":src"
-DAEMON_CLASS = 'com.syntacticbayleaves.erl4j.Erl4j'
+DAEMON_CLASS = 'com.syntacticbayleaves.erl4j.SampleErl4j'
 PID_FILE = 'tmp/jsvc.pid'
 LOG_FILE = 'tmp/erl4j.log'
 

@@ -14,7 +14,7 @@ import org.apache.commons.daemon.DaemonContext;
 import com.ericsson.otp.erlang.OtpAuthException;
 import com.ericsson.otp.erlang.OtpErlangExit;
 
-public class Erl4j implements Daemon {
+public abstract class Erl4j implements Daemon {
     private Erl4jConnection connection;
     
     public Erl4j() {}
@@ -37,7 +37,7 @@ public class Erl4j implements Daemon {
         
         while(true) {
             request = this.connection.receive();
-            response = new OtpErlangLong(10);
+            response = this.respond(request);
             this.connection.reply(request, response);
         }
         
@@ -45,6 +45,7 @@ public class Erl4j implements Daemon {
     public void stop() {}
     public void destroy() {}
     
+    abstract OtpErlangObject respond(Erl4jRequest request);
     
 }
 
