@@ -1,0 +1,11 @@
+Erl4j provides a framework for creating Java servers that can respond to Erlang RPC messages. 
+
+Dependencies:
+ * jsvc 1.0.1 (http://commons.apache.org/daemon/jsvc.html)
+ * Jinterface 1.5.1 (part of Erlang/OTP)
+ * Rake 0.8.7
+ 
+Erl4j may work with other versions of those dependencies, but those are just the ones I've tested it in.
+
+To use Erl4j, you just have to implement the Erl4j abstract class, specifically the respond method. See sample/com/syntacticbayleaves/erl4j/SampleErl4j.java
+

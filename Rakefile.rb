@@ -34,26 +34,39 @@ end
 
 CLEAN.include FileList['**/*.class']
 CLEAN.include "src/erl4j.jar"
-SRC = FileList['src/**/*.java']
-OBJ = SRC.pathmap("%X.class")
-ENV['CLASSPATH'] = find_jars + ":src"
+CLEAN.include "sample/erl4j-sample.jar"
+
+LIB_SRC = FileList['src/**/*.java']
+LIB_OBJ = LIB_SRC.pathmap("%X.class")
+
+SAMPLE_SRC = FileList['sample/**/*.java']
+SAMPLE_OBJ = SAMPLE_SRC.pathmap("%X.class")
+
+ENV['CLASSPATH'] = find_jars + ":src:sample"
 DAEMON_CLASS = 'com.syntacticbayleaves.erl4j.SampleErl4j'
 PID_FILE = 'tmp/jsvc.pid'
 LOG_FILE = 'tmp/erl4j.log'
 
 directory "tmp"
 
-task :default => [:compile]
+task :default => [:compile_lib]
 
 rule ".class" => [".java"] do |t|
   sh "javac #{t.source}"
 end
 
-task :compile => OBJ
+task :compile_lib => LIB_OBJ
+task :compile_sample => LIB_OBJ + SAMPLE_OBJ
 
-file "erl4j.jar" => [:compile] do |t|
+file "erl4j.jar" => [:compile_lib] do |t|
   cd "src" do |path|
-    sh "jar -cf #{t.name} #{OBJ.pathmap('%{src/,}p')}"
+    sh "jar -cf #{t.name} #{LIB_OBJ.pathmap('%{src/,}p')}"
+  end
+end
+
+file "erl4j-sample.jar" => [:compile_sample] do |t|
+  cd "sample" do |path|
+    sh "jar -cf #{t.name} #{SAMPLE_OBJ.pathmap('%{sample/,}p')}"
   end
 end
 

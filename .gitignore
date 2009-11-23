@@ -2,3 +2,4 @@
 *.log
 *.pid
 src/erl4j.jar
+sample/erl4j-sample.jar
