@@ -8,6 +8,6 @@ import com.syntacticbayleaves.erl4j.Erl4jRequest;
 
 public class SampleErl4jHandler implements Erl4jHandler {
     public OtpErlangObject respond(Erl4jRequest request) {
-        return new OtpErlangLong(99);
+        return request.getMessage();
     }
 }

@@ -24,6 +24,10 @@ public class Erl4jRequest {
         return this.getSender().elementAt(1);
     }
     
+    public OtpErlangTuple getMessage() {
+        return (OtpErlangTuple) this.raw_request.elementAt(2);
+    }
+    
     public OtpErlangTuple makeResponse(OtpErlangObject raw_response) {
         return new OtpErlangTuple(new OtpErlangObject[] {this.getRef(), raw_response});
     }
