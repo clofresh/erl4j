@@ -26,18 +26,23 @@ public class Erl4j implements Daemon {
     private OtpSelf me;
     private int timeout;
     
+    private static final int NODE_NAME_INDEX    = 0;
+    private static final int HANDLER_CLASS_INDEX = 1;
+    private static final int TIMEOUT_INDEX      = 2;
+    private static final int THREAD_LIMIT_INDEX = 3;
+    
     public Erl4j() {}
     
     public void init(DaemonContext context) throws IOException, ClassNotFoundException {
         String[] args = context.getArguments();
 
-        this.timeout = Integer.parseInt(args[2]);
-        this.threadPool = Executors.newFixedThreadPool(Integer.parseInt(args[3]));
+        this.timeout = Integer.parseInt(args[TIMEOUT_INDEX]);
+        this.threadPool = Executors.newFixedThreadPool(Integer.parseInt(args[THREAD_LIMIT_INDEX]));
 
         ClassLoader loader = Erl4j.class.getClassLoader();
-        this.dispatcherClass = loader.loadClass(args[1]);
+        this.dispatcherClass = loader.loadClass(args[HANDLER_CLASS_INDEX]);
         
-        this.me = new OtpSelf(args[0]);
+        this.me = new OtpSelf(args[NODE_NAME_INDEX]);
         this.me.publishPort();
     }
     
