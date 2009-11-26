@@ -9,7 +9,8 @@ function call_jsvc() {
          "${DAEMON_CLASS}"  \
          "${NODE_NAME}"     \
          "${HANDLER_CLASS}" \
-         "${TIMEOUT}"
+         "${TIMEOUT}"       \
+         "${THREAD_LIMIT}"
 }
 
 function run() {

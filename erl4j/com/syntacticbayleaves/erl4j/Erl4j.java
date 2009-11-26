@@ -1,6 +1,7 @@
 package com.syntacticbayleaves.erl4j;
 
-import java.util.ArrayList;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ExecutorService;
 import java.security.SecureClassLoader;
 
 // Erlang's jinterface
@@ -21,7 +22,7 @@ import com.ericsson.otp.erlang.OtpErlangExit;
 
 public class Erl4j implements Daemon {
     private Class dispatcherClass;
-    private ArrayList runnables, threads;
+    private ExecutorService threadPool;
     private OtpSelf me;
     private int timeout;
     
@@ -31,8 +32,7 @@ public class Erl4j implements Daemon {
         String[] args = context.getArguments();
 
         this.timeout = Integer.parseInt(args[2]);
-        this.runnables = new ArrayList();
-        this.threads = new ArrayList();
+        this.threadPool = Executors.newFixedThreadPool(Integer.parseInt(args[3]));
 
         ClassLoader loader = Erl4j.class.getClassLoader();
         this.dispatcherClass = loader.loadClass(args[1]);
@@ -44,7 +44,6 @@ public class Erl4j implements Daemon {
     public void start() {
         OtpConnection connection;
         Erl4jRunnable runnable;
-        Thread thread;
         Erl4jHandler dispatcher;
         
         try {
@@ -53,10 +52,7 @@ public class Erl4j implements Daemon {
                     dispatcher = (Erl4jHandler) this.dispatcherClass.newInstance();
                     connection = this.me.accept();
                     runnable = new Erl4jRunnable(connection, dispatcher, this.timeout);
-                    thread = new Thread(runnable);
-                    thread.start();
-                    this.runnables.add(runnable);
-                    this.threads.add(thread);
+                    this.threadPool.execute(runnable);
                 } catch (IOException e) {
                     // Remote node tried to connect but couldn't find a common protocol
                 } catch (OtpAuthException e) {
@@ -72,17 +68,7 @@ public class Erl4j implements Daemon {
     }
     
     public void stop() {
-        for(Object runnable:this.runnables) {
-            ((Erl4jRunnable) runnable).stop();
-        }
-
-        for(Object thread:this.threads) {
-            try {
-                ((Thread) thread).join(10000);
-            } catch (InterruptedException e) {
-                
-            }
-        }
+        this.threadPool.shutdown();
     }
     
     public void destroy() {
