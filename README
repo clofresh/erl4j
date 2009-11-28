@@ -1,6 +1,7 @@
 Erl4j provides a framework for creating Java daemons that can respond to Erlang RPC messages. 
 
 Dependencies:
+ * Java 1.6
  * jsvc 1.0.1 (http://commons.apache.org/daemon/jsvc.html)
  * Jinterface 1.5.1 (part of Erlang/OTP)
  * Rake 0.8.7
@@ -13,18 +14,26 @@ Before running Erl4j, make sure that epmd is running, otherwise it won't be able
 To start a server with the samples, run:
   rake run
 
-To test it our, start an Erlang process with:
+To test it out, start an Erlang process with:
   erl -sname my_node
 
 For some reason, it won't work without the sname param.
 
 Then from the interpreter you can run:
-  rpc:call('erl4j@my_host', my_method, my_param, []).
+  rpc:call('erl4j@my_host', my_module, my_function, [param1, param2]).
 
 And it should echo the call back to you:
-  {call,my_method,my_param,[],<0.31.0>}
+  {call,my_module,my_function,[param1, param2],<0.31.0>}
 
-To create your own Erl4j server, you just have to implement the Erl4jHandler interface and update bin/erl4jctl.conf to use your Erl4jHandler implementation class. 
+To create your own Erl4j server, you just have to implement the Erl4jHandler interface which is simply:
 
-See erl4j-sample/com/syntacticbayleaves/erl4j/SampleErl4jDispatcher.java and erl4j-sample/com/syntacticbayleaves/erl4j/SampleErl4jHandler.java for examples.
+  public interface Erl4jHandler {
+      public OtpErlangObject respond(Erl4jRequest request);
+  }
+
+Then update bin/erl4jctl.conf to use your Erl4jHandler implementation class. 
+
+OtpErlangObject is Jinterface's Java representation of an Erlang term. See http://www.erlang.org/doc/apps/jinterface/jinterface_users_guide.html.
+
+See erl4j-sample/com/syntacticbayleaves/erl4j/sample/ for examples.
 
